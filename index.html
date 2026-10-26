@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pesquisa com professores | MOVIZEN</title>
+  <meta name="description" content="Pesquisa de mercado com professores sobre os desafios da rotina escolar e o interesse em novas estratégias pedagógicas. Projeto MOVIZEN — yoga infantil na rotina escolar.">
+  <meta property="og:title" content="Pesquisa com professores | MOVIZEN">
+  <meta property="og:description" content="Desafios da rotina escolar e novas estratégias pedagógicas. Participe da pesquisa do projeto MOVIZEN — yoga infantil na rotina escolar.">
+  <!-- [IMAGEM AQUI] A imagem og-image.png ainda não existe. Crie- e coloque-a na mesma pasta antes de publicar. -->
+  <meta property="og:image" content="og-image.png">
+  <meta name="theme-color" content="#F6F1E7">
+
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #F6F1E7;            /* creme */
+      --surface: #FFFBF2;       /* superfície leve dos cartões */
+      --ink: #2B2A26;           /* texto quase preto quente */
+      --ink-soft: #5C5850;      /* texto secundário */
+      --ink-faint: #6E6A61;     /* texto terciário */
+      --sage: #6F8F72;          /* verde sálvia — cor principal */
+      --sage-deep: #577A5B;     /* verde para texto sobre claro, contraste AA */
+      --sage-soft: #DCE6DD;     /* preenchimento das opções marcadas */
+      --sage-line: #C3D3C5;     /* borda fina das opções marcadas */
+      --terra: #C8775A;         /* terracota — só em detalhe */
+      --line: #E2DACB;          /* borda fina */
+      --error: #A84D2E;         /* terracota escuro p/ erro de obrigatória */
+      --focus: #4B6E4F;         /* anel de foco */
+      --white: #FFFFFF;
+
+      --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+      --font-sans: "Inter", "Atkinson Hyperlegible", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+      --radius: 12px;
+      --radius-sm: 8px;
+      --maxw: 640px;
+      --target: 44px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 17px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* foco visível em qualquer elemento interativo */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 24px 20px 72px;
+    }
+
+    /* ===== topbar ===== */
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      min-height: var(--target);
+      margin-bottom: 12px;
+    }
+    .logo {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.14em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .step-count {
+      font-size: 13px;
+      color: var(--ink-faint);
+      letter-spacing: 0.04em;
+    }
+    .progress {
+      height: 6px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--sage);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* ===== etapas (screens) ===== */
+    .stage { display: none; }
+    .stage.active { display: block; }
+
+    .section-label {
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--terra);
+      font-weight: 600;
+      margin: 0 0 14px;
+    }
+
+    .question-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(24px, 5.5vw, 30px);
+      line-height: 1.22;
+      margin: 0 0 8px;
+      color: var(--ink);
+    }
+
+    .question-context {
+      font-size: 15px;
+      color: var(--ink-soft);
+      margin: 0 0 18px;
+      line-height: 1.55;
+    }
+
+    .hint {
+      font-size: 13.5px;
+      color: var(--ink-faint);
+      margin: 0 0 16px;
+    }
+
+    /* ===== opções ===== */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+
+    .opt {
+      display: flex; align-items: center; gap: 14px;
+      width: 100%;
+      min-height: var(--target);
+      padding: 11px 14px 11px 12px;
+      text-align: left;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.35;
+      color: var(--ink);
+      background: transparent;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .opt:hover { border-color: var(--sage); }
+    .opt .letter {
+      flex: 0 0 30px;
+      height: 30px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      background: var(--bg);
+      transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+    }
+    .opt.selected {
+      border-color: var(--sage);
+      background: var(--sage-soft);
+    }
+    .opt.selected .letter {
+      background: var(--sage);
+      border-color: var(--sage);
+      color: var(--white);
+    }
+
+    /* campo "outra" */
+    .other-wrap { margin-top: 6px; display: none; }
+    .other-wrap.visible { display: block; }
+    .other-field {
+      width: 100%;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      color: var(--ink);
+      padding: 12px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+    .other-field:focus { border-color: var(--sage); outline: 3px solid var(--focus); outline-offset: -1px; }
+
+    /* ===== escala 1–5 ===== */
+    .scale {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .scale-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+      min-height: 96px;
+      padding: 10px 4px;
+      font-family: var(--font-sans);
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .scale-btn:hover { border-color: var(--sage); }
+    .scale-btn .num {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .scale-btn .lbl {
+      font-size: 11.5px;
+      line-height: 1.2;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+    .scale-btn.selected { border-color: var(--sage); background: var(--sage-soft); }
+    .scale-btn.selected .num { color: var(--sage-deep); }
+
+    .scale-extra {
+      margin-top: 12px;
+      width: 100%;
+      min-height: var(--target);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--ink-soft);
+      border: 1.5px dashed var(--line);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .scale-extra:hover { border-color: var(--sage); }
+    .scale-extra.selected { border-color: var(--sage); background: var(--sage-soft); color: var(--ink); }
+
+    /* ===== abertas ===== */
+    .open-field {
+      width: 100%;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      resize: vertical;
+      min-height: 130px;
+    }
+    .open-field:focus { border-color: var(--sage); outline: 3px solid var(--focus); outline-offset: -1px; }
+    label.more { display: block; margin-bottom: 8px; font-size: 15px; color: var(--ink-soft); }
+
+    /* ===== campo curto (Q19 contato) ===== */
+    .short-field {
+      width: 100%;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+    .short-field:focus { border-color: var(--sage); outline: 3px solid var(--focus); outline-offset: -1px; }
+    .contact-block { margin-top: 18px; display: none; }
+    .contact-block.visible { display: block; }
+    .contact-block label { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 500; color: var(--ink); }
+
+    /* ===== aviso de obrigatória ===== */
+    .req-msg {
+      font-size: 14px;
+      color: var(--error);
+      margin: 14px 0 0;
+      display: none;
+    }
+    .req-msg.visible { display: block; }
+
+    /* ===== navegação ===== */
+    .nav {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      margin-top: 28px;
+    }
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 500;
+      min-height: var(--target);
+      padding: 10px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-back {
+      background: transparent;
+      color: var(--ink-soft);
+      border: 1.5px solid var(--line);
+    }
+    .btn-back:hover { border-color: var(--sage); color: var(--ink); }
+    .btn-primary {
+      background: var(--sage-deep);
+      color: var(--white);
+      border: 1.5px solid var(--sage-deep);
+    }
+    .btn-primary:hover { background: var(--sage); border-color: var(--sage); }
+    .btn-primary:disabled {
+      background: var(--line);
+      border-color: var(--line);
+      color: var(--ink-faint);
+      cursor: not-allowed;
+    }
+    .btn-link {
+      background: transparent;
+      color: var(--sage-deep);
+      border: none;
+      padding: 10px 4px;
+      font-weight: 600;
+    }
+    .btn-link:hover { text-decoration: underline; }
+
+    /* ===== tela de abertura ===== */
+    .intro .kicker {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 34px;
+      line-height: 1.15;
+      margin: 28px 0 10px;
+      color: var(--ink);
+    }
+    .intro .sub {
+      font-size: 18px;
+      color: var(--ink-soft);
+      margin: 0 0 24px;
+    }
+    .intro-text {
+      font-size: 16px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin: 0 0 20px;
+    }
+    .intro-text p { margin: 0 0 12px; }
+    .intro .timer {
+      font-size: 14px;
+      color: var(--ink-faint);
+      margin: 0 0 20px;
+    }
+    .intro .btn-primary { font-size: 17px; padding: 12px 30px; }
+
+    /* ===== tela final ===== */
+    .thanks { padding-top: 40px; }
+    .thanks .check-wrap { margin-bottom: 22px; }
+    .thanks h2 {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(26px, 6vw, 34px);
+      line-height: 1.2;
+      margin: 0 0 16px;
+    }
+    .thanks p { font-size: 17px; color: var(--ink-soft); margin: 0 0 12px; line-height: 1.6; }
+    .thanks .demo-note {
+      font-size: 13.5px;
+      color: var(--ink-faint);
+      border-left: 3px solid var(--terra);
+      padding-left: 12px;
+      margin: 28px 0 26px;
+    }
+    /* pequeno tique em círculo sálvia, desenhado à mão */
+    .tick {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--sage-soft);
+      border: 2px solid var(--sage);
+      position: relative;
+    }
+    .tick::after {
+      content: "";
+      position: absolute;
+      left: 11px; top: 12px;
+      width: 20px; height: 11px;
+      border-left: 3px solid var(--sage-deep);
+      border-bottom: 3px solid var(--sage-deep);
+      transform: rotate(-45deg);
+    }
+
+    /* ===== transições entre etapas ===== */
+    .stage {
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+    }
+    .stage.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      animation: fadeIn 0.28s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+      .stage, .stage.active { opacity: 1; transform: none; }
+    }
+
+    /* ===== telas muito estreitas ===== */
+    @media (max-width: 420px) {
+      .scale-btn { min-height: 88px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="logo" href="#" aria-label="MOVIZEN">MOVIZEN</a>
+      <span class="step-count" id="stepCount" aria-hidden="true"></span>
+    </header>
+    <div class="progress" role="presentation" aria-hidden="true">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <main id="main" aria-live="polite">
+      <!-- As etapas são montadas aqui pelo JS. O conteúdo introdutório e as
+           perguntas vivem no array QUESTIONS abaixo e são renderizados dinamicamente. -->
+    </main>
+  </div>
+
+  <script>
+    "use strict";
+
+    /* ===================================================================
+       CONTEÚDO — edite aqui para mudar as perguntas.
+       Cada pergunta tem:
+         id      (número de ordem)
+         section (nome da seção, exibido pequeno acima da pergunta)
+         type    "single" | "multiple" | "scale" | "open"
+         prompt  (texto da pergunta)
+         context (opcional: texto em menor destaque acima da pergunta)
+         options (array de strings — para single/multiple/scale)
+         scaleExtra (opcional, ex.: "Ainda não sei avaliar")
+         exclusive (array de índices das opções exclusivas, para multiple)
+         optional (bool — abertas opcionais; obrigatórias por padrão)
+   =================================================================== */
+
+    const PRESENTATION = [
+      "Olá, professor(a)! Estou desenvolvendo um projeto que busca integrar práticas de yoga infantil à rotina pedagógica, apoiando o trabalho com atenção, percepção corporal, autorregulação e desenvolvimento socioemocional das crianças.",
+      "Antes de avançar, quero entender os desafios do seu dia a dia, as estratégias que você usa e o seu interesse por novas formas de formação e apoio.",
+      "Não existem respostas certas ou erradas."
+    ];
+
+    const QUESTIONS = [
+      { id: 1, section: "Sobre você e sua atuação profissional", type: "single",
+        prompt: "Em qual etapa da educação você atua atualmente?",
+        options: ["Educação Infantil — creche", "Educação Infantil — pré-escola", "Ensino Fundamental — anos iniciais", "Ensino Fundamental — anos finais", "Atuo em mais de uma etapa", "Outra"] },
+
+      { id: 2, section: "Sobre você e sua atuação profissional", type: "single",
+        prompt: "Há quanto tempo você atua na educação?",
+        options: ["Menos de 1 ano", "De 1 a 3 anos", "De 4 a 6 anos", "De 7 a 10 anos", "Mais de 10 anos"] },
+
+      { id: 3, section: "Sobre você e sua atuação profissional", type: "single",
+        prompt: "Qual é a sua principal área de atuação?",
+        options: ["Professor(a) regente", "Professor(a) de área ou disciplina", "Professor(a) de Educação Física", "Coordenação ou orientação pedagógica", "Gestão escolar", "Outra"] },
+
+      { id: 4, section: "Desafios da rotina escolar", type: "multiple",
+        prompt: "Quais situações você encontra com maior frequência no seu cotidiano escolar?",
+        options: [
+          "Dificuldade das crianças em manter a atenção nas atividades.",
+          "Agitação excessiva em determinados momentos da rotina.",
+          "Dificuldade para lidar com frustrações e emoções.",
+          "Conflitos entre as crianças e dificuldades de convivência.",
+          "Dificuldade de compartilhar materiais, brinquedos e espaços.",
+          "Dificuldade de respeitar combinados e regras coletivas.",
+          "Dificuldade de realizar transições entre atividades, como sair da brincadeira e iniciar outra proposta.",
+          "Dificuldade de envolver as crianças em momentos de calma, respiração ou relaxamento.",
+          "Falta de tempo para desenvolver atividades voltadas ao desenvolvimento socioemocional.",
+          "Falta de estratégias práticas para lidar com essas situações.",
+          "Não enfrento dificuldades significativas nessas áreas.",
+          "Outras."
+        ],
+        exclusive: [10] },
+
+      { id: 5, section: "Desafios da rotina escolar", type: "single",
+        prompt: "Com que frequência você enfrenta dificuldades para ajudar as crianças a recuperar a atenção ou se reorganizar emocionalmente durante a rotina escolar?",
+        options: ["Nunca ou quase nunca.", "Raramente.", "Às vezes.", "Frequentemente.", "Muito frequentemente."] },
+
+      { id: 6, section: "Desafios da rotina escolar", type: "scale",
+        prompt: "Na sua percepção, quanto essas situações interferem no desenvolvimento das atividades pedagógicas e na rotina da turma?",
+        options: [["1", "Não interferem"], ["2", "Interferem pouco"], ["3", "Interferem moderadamente"], ["4", "Interferem bastante"], ["5", "Interferem muito"]] },
+
+      { id: 7, section: "Desafios da rotina escolar", type: "multiple",
+        prompt: "Quais são suas maiores dificuldades ao lidar com essas situações?",
+        options: [
+          "Não saber quais estratégias utilizar.",
+          "Conhecer estratégias, mas ter dificuldade para aplicá-las na prática.",
+          "Falta de tempo para planejar atividades específicas.",
+          "Dificuldade de adaptar as propostas às diferentes idades e necessidades das crianças.",
+          "Falta de materiais e recursos pedagógicos.",
+          "Dificuldade de manter a participação das crianças.",
+          "Falta de apoio ou formação específica.",
+          "Dificuldade de incorporar essas práticas à rotina escolar.",
+          "Não tenho dificuldades significativas nesse aspecto.",
+          "Outra."
+        ],
+        exclusive: [8] },
+
+      { id: 8, section: "Desafios da rotina escolar", type: "single",
+        prompt: "Atualmente, você utiliza alguma estratégia específica para trabalhar a atenção, a percepção corporal, a autorregulação ou o desenvolvimento socioemocional das crianças?",
+        options: ["Sim, frequentemente.", "Sim, ocasionalmente.", "Já utilizei, mas não utilizo atualmente.", "Não utilizo estratégias específicas.", "Não sei quais estratégias poderiam ser utilizadas."] },
+
+      { id: 9, section: "Desafios da rotina escolar", type: "open", optional: true,
+        prompt: "Se você utiliza alguma estratégia, qual é? Como tem sido sua experiência?" },
+
+      { id: 10, section: "Interesse por novas possibilidades pedagógicas", type: "single",
+        prompt: "Você já teve contato com práticas de yoga infantil no contexto educacional?",
+        options: ["Sim, já apliquei com meus alunos.", "Sim, participei de uma formação ou vivência, mas não apliquei.", "Já conheço, mas nunca participei de uma experiência prática.", "Conheço pouco sobre o assunto.", "Nunca tive contato com yoga infantil."] },
+
+      { id: 11, section: "Interesse por novas possibilidades pedagógicas", type: "scale",
+        context: "Imagine uma proposta pedagógica que orientasse professores a integrar práticas de yoga infantil à rotina escolar, por meio de atividades lúdicas, movimentos, posturas, respiração, atenção e relaxamento, com orientações adaptáveis às diferentes faixas etárias.",
+        prompt: "Quão útil essa proposta seria para a sua atuação profissional?",
+        options: [["1", "Nada útil"], ["2", "Pouco útil"], ["3", "Moderadamente útil"], ["4", "Muito útil"], ["5", "Extremamente útil"]],
+        scaleExtra: "Ainda não sei avaliar" },
+
+      { id: 12, section: "Interesse por novas possibilidades pedagógicas", type: "multiple",
+        prompt: "Quais recursos seriam mais úteis para você em uma proposta como essa?",
+        options: [
+          "Formação para compreender os fundamentos e aprender a aplicar as práticas.",
+          "Vídeos demonstrativos das atividades.",
+          "Orientações passo a passo para conduzir as propostas.",
+          "Atividades prontas para utilizar e adaptar à rotina escolar.",
+          "Sugestões organizadas por faixa etária.",
+          "Sequências de atividades para diferentes momentos da rotina.",
+          "Estratégias para trabalhar atenção, percepção corporal e autorregulação.",
+          "Orientações para adaptar as propostas às necessidades das crianças.",
+          "Acompanhamento ou suporte para esclarecer dúvidas.",
+          "Materiais que ajudem a acompanhar e registrar as experiências.",
+          "Nenhum desses recursos seria útil para mim.",
+          "Outros."
+        ],
+        exclusive: [10] },
+
+      { id: 13, section: "Interesse por novas possibilidades pedagógicas", type: "multiple",
+        prompt: "Quais seriam suas principais preocupações ou dificuldades para utilizar uma metodologia baseada no yoga infantil na rotina escolar?",
+        options: [
+          "Falta de tempo na rotina.",
+          "Falta de espaço ou materiais adequados.",
+          "Dificuldade para conduzir as atividades.",
+          "Falta de conhecimento sobre yoga infantil.",
+          "Dificuldade de manter o envolvimento das crianças.",
+          "Dificuldade de adaptar as práticas às diferentes faixas etárias.",
+          "Falta de apoio da instituição escolar.",
+          "Dúvidas sobre como integrar as práticas ao planejamento pedagógico.",
+          "Não teria preocupações ou dificuldades significativas.",
+          "Não teria interesse em utilizar essa proposta.",
+          "Outras."
+        ],
+        exclusive: [8, 9] },
+
+      { id: 14, section: "Interesse em formação e possibilidade de compra", type: "single",
+        prompt: "Você teria interesse em participar de uma capacitação prática sobre uma metodologia baseada no yoga infantil, com orientações para integrar as práticas à rotina pedagógica?",
+        options: ["Sim, tenho muito interesse.", "Sim, dependendo do conteúdo e do formato.", "Talvez; precisaria conhecer melhor a proposta.", "Tenho pouco interesse.", "Não tenho interesse."] },
+
+      { id: 15, section: "Interesse em formação e possibilidade de compra", type: "single",
+        prompt: "Qual formato de capacitação seria mais adequado para você?",
+        options: ["Curso totalmente on-line, com aulas gravadas.", "Curso on-line com aulas ao vivo.", "Formação presencial.", "Formação híbrida, com atividades on-line e presenciais.", "Gostaria de ter acesso a uma plataforma com vídeos, atividades e orientações para consultar quando necessário.", "Outro."] },
+
+      { id: 16, section: "Interesse em formação e possibilidade de compra", type: "single",
+        prompt: "Caso uma capacitação apresentasse conteúdo relevante para sua atuação, orientações práticas e materiais de apoio, como você preferiria ter acesso a ela?",
+        options: ["Pagaria individualmente por uma formação.", "Preferiria que a escola ou a secretaria de educação custeasse a formação.", "Preferiria uma assinatura de plataforma com formação e recursos pedagógicos.", "Teria interesse apenas em uma opção gratuita.", "Não teria interesse em adquirir essa solução.", "Ainda não sei."] },
+
+      { id: 17, section: "Interesse em formação e possibilidade de compra", type: "single",
+        prompt: "Considerando uma formação on-line com conteúdo organizado, vídeos demonstrativos, orientações práticas e materiais de apoio, quanto você estaria disposto(a) a pagar por um curso completo?",
+        options: ["Não pagaria por esse tipo de formação.", "Até R$ 49.", "De R$ 50 a R$ 99.", "De R$ 100 a R$ 199.", "De R$ 200 a R$ 399.", "R$ 400 ou mais.", "Dependeria do conteúdo, da carga horária e dos benefícios oferecidos.", "Ainda não sei avaliar."] },
+
+      { id: 18, section: "Interesse em formação e possibilidade de compra", type: "open", optional: true,
+        prompt: "O que uma formação ou solução pedagógica precisaria oferecer para que você considerasse investir nela?" },
+
+      { id: 19, section: "Interesse em formação e possibilidade de compra", type: "single",
+        prompt: "Você gostaria de participar futuramente de uma conversa breve para contribuir com o desenvolvimento e a avaliação dessa proposta?",
+        options: ["Sim.", "Talvez.", "Não."] }
+    ];
+
+    /* ===================================================================
+       LÓGICA DA DEMONSTRAÇÃO
+   =================================================================== */
+
+    const main = document.getElementById("main");
+    const stepCount = document.getElementById("stepCount");
+    const progressFill = document.getElementById("progressFill");
+
+    /* Estado filtrado: usamos as perguntas como stage. A tela de abertura
+       é um stage sintético índice -1. As respostas são apenas retidas em
+       memória para alimentar a navegação Voltar; nada é salvo nem enviado. */
+    const totalStages = QUESTIONS.length;
+    let current = -1;               // -1 = abertura
+    let answers = {};               // id da pergunta -> resposta (em memória)
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    /* ---------- renderização ---------- */
+
+    function buildIntro() {
+      const el = document.createElement("section");
+      el.className = "stage intro";
+      el.id = "stage-intro";
+
+      let opt = PRESENTATION.map(p => `<p>${escapeHtml(p)}</p>`).join("");
+      el.innerHTML = `
+        <h1 class="kicker">Pesquisa com professores</h1>
+        <p class="sub">Desafios da rotina escolar e novas estratégias pedagógicas</p>
+        <div class="intro-text">${opt}</div>
+        <p class="timer">Leva uns 5 minutos</p>
+        <button type="button" class="btn btn-primary" id="btnStart">Começar</button>`;
+      return el;
+    }
+
+    function buildQuestion(q) {
+      const el = document.createElement("section");
+      el.className = "stage q";
+      el.id = "stage-" + q.id;
+      el.dataset.qid = q.id;
+
+      const sec = `<p class="section-label">${escapeHtml(q.section)}</p>`;
+      const ctx = q.context ? `<p class="question-context">${escapeHtml(q.context)}</p>` : "";
+      const title = `<h1 class="question-title">${escapeHtml(q.prompt)}</h1>`;
+
+      let body = "";
+      if (q.type === "single") {
+        const hint = q.options.some(o => /^(Outra|Outro|Outros)/.test(o.trim()))
+          ? `<p class="hint">Escolha uma opção. Se escolher “Outra(o)”, preencha o campo.</p>` : "";
+        body = hint + `<div class="options" role="radiogroup" aria-label="${escapeAttr(q.prompt)}"></div>`;
+      } else if (q.type === "multiple") {
+        body = `<p class="hint">Pode marcar mais de uma</p>
+                <div class="options" role="group" aria-label="${escapeAttr(q.prompt)}"></div>`;
+      } else if (q.type === "scale") {
+        body = `<div class="scale" role="radiogroup" aria-label="${escapeAttr(q.prompt)}"></div>`;
+        if (q.scaleExtra) {
+          body += `<button type="button" class="scale-extra" role="radio" aria-checked="false">${escapeHtml(q.scaleExtra)}</button>`;
+        }
+      } else if (q.type === "open") {
+        body = `<label class="more" for="open-${q.id}">Descreva sua experiência (opcional)</label>
+                <textarea class="open-field" id="open-${q.id}" rows="5" placeholder="Sua resposta..."></textarea>`;
+      }
+
+      const nav = `<div class="nav">
+          <button type="button" class="btn btn-back" data-nav="back">Voltar</button>
+          <button type="button" class="btn btn-primary" data-nav="next">${q.type === "open" ? "Pular" : "Continuar"}</button>
+        </div>`;
+
+      let contact = "";
+      if (q.id === 19) {
+        contact = `<div class="contact-block" id="contactBlock">
+            <label for="contact-19">Deixe um contato para receber o convite (opcional)</label>
+            <input class="short-field" id="contact-19" type="text" autocomplete="off">
+          </div>`;
+      }
+
+      el.innerHTML = sec + ctx + title + body + contact +
+        `<p class="req-msg" id="req-${q.id}" role="alert"></p>` + nav;
+      return el;
+    }
+
+    function buildThanks() {
+      const el = document.createElement("section");
+      el.className = "stage thanks";
+      el.id = "stage-thanks";
+      el.innerHTML = `
+        <div class="check-wrap"><div class="tick" aria-hidden="true"></div></div>
+        <h2>Obrigada por compartilhar sua experiência!</h2>
+        <p>Suas respostas vão ajudar a desenvolver o MOVIZEN a partir das necessidades reais dos professores.</p>
+        <p class="demo-note">Demonstração: as respostas não foram enviadas.</p>
+        <div class="nav" style="justify-content:flex-start">
+          <button type="button" class="btn btn-primary" id="btnRestart">Responder de novo</button>
+        </div>`;
+      return el;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    /* ---------- montagem ---------- */
+
+    function render() {
+      main.innerHTML = "";
+      main.appendChild(buildIntro());
+
+      QUESTIONS.forEach(q => {
+        const el = buildQuestion(q);
+        main.appendChild(el);
+        attachQuestionScripts(q, el);
+      });
+
+      main.appendChild(buildThanks());
+
+      document.getElementById("btnStart").addEventListener("click", () => go(0));
+      document.getElementById("btnRestart").addEventListener("click", resetAll);
+    }
+
+    /* Liga a lógica específica de cada tipo de pergunta ao seu stage */
+    function attachQuestionScripts(q, el) {
+      if (q.type === "single") {
+        buildSingleOptions(q, el);
+      } else if (q.type === "multiple") {
+        buildMultipleOptions(q, el);
+      } else if (q.type === "scale") {
+        buildScale(q, el);
+      } else if (q.type === "open") {
+        const ta = el.querySelector(".open-field");
+        if (ta) ta.value = (answers[q.id] && answers[q.id].text) || "";
+      }
+
+      // restaura estado salvo (Voltar)
+      const saved = answers[q.id];
+      if (saved) restoreSaved(q, el, saved);
+
+      const backBtn = el.querySelector('[data-nav="back"]');
+      const nextBtn = el.querySelector('[data-nav="next"]');
+      backBtn.addEventListener("click", () => go(current - 1));
+      nextBtn.addEventListener("click", () => validateAndAdvance(q));
+    }
+
+    function restoreSaved(q, el, saved) {
+      if (q.type === "single" || q.type === "multiple" || q.type === "scale") {
+        const sel = el.querySelectorAll(".opt.selected, .scale-btn.selected, .scale-extra.selected");
+        sel.forEach(s => s.classList.remove("selected"));
+        const chosen = saved.value; // array (multiple) ou string
+        if (Array.isArray(chosen)) {
+          chosen.forEach(idx => {
+            const opt = el.querySelector(`[data-idx="${idx}"]`);
+            if (opt) opt.classList.add("selected");
+          });
+        } else if (chosen !== undefined && chosen !== null) {
+          const opt = el.querySelector(`[data-idx="${chosen}"]`);
+          if (opt) opt.classList.add("selected");
+        }
+        if (saved.otherText) showOther(el, saved.otherText);
+      } else if (q.type === "open" && saved.text) {
+        const ta = el.querySelector(".open-field");
+        if (ta) ta.value = saved.text;
+      }
+    }
+
+    /* ---------- construção das opções ---------- */
+
+    function buildSingleOptions(q, el) {
+      const box = el.querySelector(".options");
+      box.innerHTML = "";
+      q.options.forEach((text, i) => {
+        const isOther = /^(Outra|Outro|Outros)/.test(text.trim());
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "opt";
+        btn.dataset.idx = i;
+        btn.setAttribute("role", "radio");
+        btn.setAttribute("aria-checked", "false");
+        btn.innerHTML = `<span class="letter" aria-hidden="true">${letters[i]}</span><span>${escapeHtml(text)}</span>`;
+        btn.addEventListener("click", () => {
+          clearSelected(el, ".opt.selected");
+          btn.classList.add("selected");
+          btn.setAttribute("aria-checked", "true");
+          if (isOther) {
+            showOther(el, "", true);
+          } else {
+            hideOther(el);
+            if (q.id === 19) {
+              // Sim/Talvez mostram o campo de contato e aguardam Continuar;
+              // Não avança direto para o fim.
+              handleQ19();
+              if (i === 2) {
+                answers[q.id] = { value: i };
+                setTimeout(() => { if (el.classList.contains("active")) go(QUESTIONS.findIndex(x => x.id === q.id) + 1); }, 350);
+              }
+            } else {
+              // avança sozinho
+              answers[q.id] = { value: i };
+              setTimeout(() => { if (el.classList.contains("active")) go(QUESTIONS.findIndex(x => x.id === q.id) + 1); }, 350);
+            }
+          }
+        });
+        box.appendChild(btn);
+      });
+      // botões "única" já avançam sozinhos
+    }
+
+    function buildMultipleOptions(q, el) {
+      const box = el.querySelector(".options");
+      box.innerHTML = "";
+      const otherLabels = ["Outras", "Outra", "Outros"];
+
+      q.options.forEach((text, i) => {
+        const isOther = otherLabels.some(l => text.trim().startsWith(l));
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "opt";
+        btn.dataset.idx = i;
+        btn.setAttribute("role", "checkbox");
+        btn.setAttribute("aria-checked", "false");
+        btn.innerHTML = `<span class="letter" aria-hidden="true">${letters[i]}</span><span>${escapeHtml(text)}</span>`;
+        btn.addEventListener("click", () => toggleMultiple(q, el, i, btn, isOther));
+        box.appendChild(btn);
+      });
+    }
+
+    function toggleMultiple(q, el, idx, btn, isOther) {
+      const isExclusive = q.exclusive && q.exclusive.indexOf(idx) !== -1;
+      const currentlySelected = btn.classList.contains("selected");
+
+      if (isOther) {
+        // marca o "outra" e abre o campo; continuar só depois de preencher
+        if (!currentlySelected) {
+          btn.classList.add("selected");
+          btn.setAttribute("aria-checked", "true");
+          showOther(el, "", true);
+        } else {
+          btn.classList.remove("selected");
+          btn.setAttribute("aria-checked", "false");
+          hideOther(el);
+        }
+        hideError(el);
+        updateMultipleContinue(el, q);
+        return;
+      }
+
+      if (isExclusive) {
+        // clicar numa exclusiva desmarca todas as outras (e o "outra")
+        clearAllOptions(el);
+        btn.classList.add("selected");
+        btn.setAttribute("aria-checked", "true");
+        hideOther(el);
+      } else {
+        // clicar numa normal desmarca as exclusivas
+        clearExclusive(el, q);
+        btn.classList.toggle("selected");
+        btn.setAttribute("aria-checked", btn.classList.contains("selected"));
+      }
+      hideError(el);
+      updateMultipleContinue(el, q);
+    }
+
+    function clearAllOptions(el) {
+      el.querySelectorAll(".opt.selected").forEach(o => {
+        o.classList.remove("selected");
+        o.setAttribute("aria-checked", "false");
+      });
+    }
+    function clearExclusive(el, q) {
+      (q.exclusive || []).forEach(idx => {
+        const o = el.querySelector(`[data-idx="${idx}"]`);
+        if (o) { o.classList.remove("selected"); o.setAttribute("aria-checked", "false"); }
+      });
+    }
+    function hideOther(el) {
+      const w = el.querySelector(".other-wrap");
+      if (w) { w.classList.remove("visible"); w.querySelector("input").value = ""; }
+    }
+    function showOther(el, value, focus) {
+      let w = el.querySelector(".other-wrap");
+      if (!w) {
+        w = document.createElement("div");
+        w.className = "other-wrap";
+        w.innerHTML = `<input class="other-field" type="text" maxlength="200">`;
+        w.querySelector("input").setAttribute("aria-label", (el.dataset.qid === "19") ? "Outra resposta" : "Descreva sua opção");
+        el.querySelector(".options").after(w);
+      }
+      w.classList.add("visible");
+      const inp = w.querySelector("input");
+      inp.value = value;
+      if (focus) inp.focus();
+      inp.addEventListener("input", () => hideError(el));
+    }
+
+    function updateMultipleContinue(el, q) {
+      const nextBtn = el.querySelector('[data-nav="next"]');
+      const hasSelection = el.querySelectorAll(".opt.selected").length > 0;
+      nextBtn.disabled = !hasSelection;
+    }
+
+    /* ---------- escala ---------- */
+
+    function buildScale(q, el) {
+      const box = el.querySelector(".scale");
+      box.innerHTML = "";
+      q.options.forEach((pair, i) => {
+        const [num, label] = pair;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "scale-btn";
+        btn.dataset.idx = i;
+        btn.setAttribute("role", "radio");
+        btn.setAttribute("aria-checked", "false");
+        btn.setAttribute("aria-label", `${num}: ${label}`);
+        btn.innerHTML = `<span class="num">${escapeHtml(num)}</span><span class="lbl">${escapeHtml(label)}</span>`;
+        btn.addEventListener("click", () => {
+          clearSelected(el, ".scale-btn.selected, .scale-extra.selected");
+          btn.classList.add("selected");
+          btn.setAttribute("aria-checked", "true");
+          hideError(el);
+          answers[q.id] = { value: i };
+          setTimeout(() => { if (el.classList.contains("active")) go(QUESTIONS.findIndex(x => x.id === q.id) + 1); }, 350);
+        });
+        box.appendChild(btn);
+      });
+
+      const extra = el.querySelector(".scale-extra");
+      if (extra) {
+        extra.addEventListener("click", () => {
+          clearSelected(el, ".scale-btn.selected");
+          extra.classList.add("selected");
+          extra.setAttribute("aria-checked", "true");
+          hideError(el);
+          answers[q.id] = { value: "nao-sei" };
+        });
+      }
+    }
+
+    function clearSelected(el, sel) {
+      el.querySelectorAll(sel).forEach(b => {
+        b.classList.remove("selected");
+        b.setAttribute("aria-checked", "false");
+      });
+    }
+
+    /* ---------- navegação ---------- */
+
+    function go(idx) {
+      // remove ativo atual
+      const cur = document.querySelector(".stage.active");
+      if (cur) cur.classList.remove("active");
+
+      if (idx < 0) current = -1;
+      else if (idx >= QUESTIONS.length) current = QUESTIONS.length; // tela final
+      else current = idx;
+
+      let target;
+      if (current === -1) target = document.getElementById("stage-intro");
+      else if (current === QUESTIONS.length) target = document.getElementById("stage-thanks");
+      else target = document.getElementById("stage-" + QUESTIONS[current].id);
+
+      target.classList.add("active");
+      // Q19: restaura o estado do campo de contato ao voltar
+      if (target.id === "stage-19") {
+        const sel = document.querySelector("#stage-19 .opt.selected");
+        if (sel && (sel.dataset.idx === "0" || sel.dataset.idx === "1")) {
+          handleQ19();
+        }
+        const saved = answers[19];
+        const c = document.getElementById("contact-19");
+        if (c && saved && saved.contact) {
+          c.value = saved.contact;
+          const cur = answers[19];
+          if (cur) cur.contact = saved.contact;
+        }
+      }
+      progressFill.style.width = progressPct() + "%";
+      stepCount.textContent = progressLabel();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function progressPct() {
+      if (current === -1) return 0;
+      if (current >= QUESTIONS.length) return 100;
+      return Math.round((current / QUESTIONS.length) * 100);
+    }
+    function progressLabel() {
+      if (current === -1) return "";
+      if (current >= QUESTIONS.length) return "Concluído";
+      return `${current + 1} de ${QUESTIONS.length}`;
+    }
+
+    function validateAndAdvance(q) {
+      if (q.type === "single") {
+        const selected = q.options.findIndex((o, i) => {
+          const opt = document.querySelector(`#stage-${q.id} [data-idx="${i}"]`);
+          return opt && opt.classList.contains("selected");
+        });
+        if (selected === -1) { showReq(q); return; }
+        if (!saveFromDom(q)) return;
+        if (q.id === 19) handleQ19();
+      } else if (q.type === "multiple") {
+        const sel = Array.from(document.querySelectorAll(`#stage-${q.id} .opt.selected`)).map(o => Number(o.dataset.idx));
+        if (sel.length === 0) { showReq(q); return; }
+        // se "outra" marcado, exige texto
+        const otherWrap = document.querySelector(`#stage-${q.id} .other-wrap`);
+        const otherIdx = q.options.findIndex(o => /^(Outras|Outra|Outros)/.test(o.trim()));
+        if (otherIdx !== -1 && sel.indexOf(otherIdx) !== -1) {
+          const text = otherWrap ? otherWrap.querySelector("input").value.trim() : "";
+          if (!text) { showReq(q, "Preencha o campo “Outra” para continuar."); return; }
+        }
+        const saved = { value: sel };
+        if (otherWrap && otherWrap.querySelector("input").value.trim()) {
+          saved.otherText = otherWrap.querySelector("input").value.trim();
+        }
+        answers[q.id] = saved;
+      } else if (q.type === "scale") {
+        const selected = elSelectedIndex(q.id);
+        if (selected === null) { showReq(q); return; }
+        answers[q.id] = { value: selected };
+      } else if (q.type === "open") {
+        const ta = document.querySelector(`#stage-${q.id} .open-field`);
+        answers[q.id] = { value: [], text: (ta && ta.value.trim()) || "" };
+      }
+      go(current + 1);
+    }
+
+    function elSelectedIndex(qid) {
+      const s = document.querySelector(`#stage-${qid}.stage.active`);
+      let sel = document.querySelector(`#stage-${qid} .scale-btn.selected`);
+      let idx = null;
+      if (sel) idx = sel.dataset.idx;
+      else if (document.querySelector(`#stage-${qid} .scale-extra.selected`)) idx = "nao-sei";
+      return idx === null || idx === undefined ? null : String(idx);
+    }
+
+    function saveFromDom(q) {
+      const sel = document.querySelector(`#stage-${q.id} .opt.selected`);
+      const idx = sel ? Number(sel.dataset.idx) : null;
+      if (idx === null) return false;
+      const saved = { value: idx };
+      const otherWrap = document.querySelector(`#stage-${q.id} .other-wrap`);
+      const isOther = q.options[idx] && /^(Outra|Outro|Outros)/.test(q.options[idx].trim());
+      if (isOther) {
+        const text = otherWrap ? otherWrap.querySelector("input").value.trim() : "";
+        if (!text) { showReq(q, "Preencha o campo “Outra” para continuar."); return false; }
+        saved.otherText = text;
+      } else if (otherWrap) {
+        // guarda só se o campo "outra" tiver conteúdo digitado
+        const t = otherWrap.querySelector("input").value.trim();
+        if (t) saved.otherText = t;
+      }
+      answers[q.id] = saved;
+      // Q19: preserva o contato digitado
+      if (q.id === 19) {
+        const c = document.getElementById("contact-19");
+        if (c && c.value.trim()) saved.contact = c.value.trim();
+      }
+      return true;
+    }
+
+    function showReq(q, msg) {
+      const m = document.getElementById("req-" + q.id);
+      if (m) {
+        m.classList.add("visible");
+        m.textContent = msg || "Selecione uma opção para continuar.";
+        m.focus({ preventScroll: false });
+      }
+    }
+    function hideError(el) {
+      const m = el.querySelector(".req-msg");
+      if (m) m.classList.remove("visible");
+    }
+
+    /* ---------- específico da Q19 ---------- */
+    function handleQ19() {
+      const q = QUESTIONS[18];
+      const sel = document.querySelector("#stage-19 .opt.selected");
+      if (!sel) return;
+      const idx = Number(sel.dataset.idx);
+      const isYesMaybe = (idx === 0 || idx === 1); // "Sim." ou "Talvez."
+      const contactBlock = document.getElementById("contactBlock");
+      const contactInput = document.getElementById("contact-19");
+      // salva o contato junto com a resposta, se estiver preenchido
+      if (isYesMaybe && contactInput && contactInput.value.trim()) {
+        const cur = answers[q.id] || {};
+        cur.contact = contactInput.value.trim();
+        answers[q.id] = cur;
+      }
+      contactBlock.classList.toggle("visible", isYesMaybe);
+      if (isYesMaybe && contactInput) {
+        // restaura contato já digitado (se guardado)
+        const cur = answers[q.id];
+        if (cur && cur.contact && !contactInput.value) contactInput.value = cur.contact;
+      }
+    }
+
+    /* ---------- teclado ---------- */
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const activeEl = document.activeElement;
+        // Enter já dispara clique em botões; evita duplicar em opções
+        if (activeEl && activeEl.tagName === "BUTTON") return;
+
+        const stage = document.querySelector(".stage.active");
+        if (!stage || stage.id === "stage-intro" || stage.id === "stage-thanks") {
+          if (stage && stage.id === "stage-intro") document.getElementById("btnStart").click();
+          return;
+        }
+        const q = QUESTIONS.find(x => x.id === Number(stage.dataset.qid));
+        if (q) validateAndAdvance(q);
+      } else if (/^[1-9]$/.test(e.key)) {
+        const stage = document.querySelector(".stage.active");
+        if (!stage || !stage.dataset.qid) return;
+        const q = QUESTIONS.find(x => x.id === Number(stage.dataset.qid));
+        if (!q) return;
+        // números só válidos para single/multiple/scale
+        if (q.type === "single" || q.type === "multiple") {
+          const idx = Number(e.key) - 1;
+          if (idx >= q.options.length) return;
+          const opt = stage.querySelector(`[data-idx="${idx}"]`);
+          if (opt) opt.click();
+        } else if (q.type === "scale") {
+          const idx = Number(e.key) - 1;
+          if (idx >= q.options.length) return;
+          const btn = stage.querySelector(`.scale-btn[data-idx="${idx}"]`);
+          if (btn) { btn.click(); btn.focus(); }
+        }
+      }
+    });
+
+    /* ---------- reset ---------- */
+    function resetAll() {
+      answers = {};
+      current = -1;
+      document.querySelector(".stage.active")?.classList.remove("active");
+      render();
+      go(-1);
+      progressFill.style.width = "0%";
+      stepCount.textContent = "";
+      window.scrollTo({ top: 0 });
+    }
+
+    /* ---------- boot ---------- */
+    render();
+    go(-1);
+  </script>
+</body>
+</html>
